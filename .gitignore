@@ -1,6 +1,6 @@
 __pycache__/
 .env
 cache/**
-!cache/
+!cache
 videos/**
-!videos/
+!videos
