@@ -1,6 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 
-def create_movie_layout(items, canvas_size=(1920, 1080), margin=10, font_path='./font/times-roman/OPTITimes-Roman.otf'):
+def create_layout(items, canvas_size=(1920, 1080), margin=10, font_path='./font/times-roman/OPTITimes-Roman.otf'):
     # Calculate the number of columns and rows
     num_items = len(items)
     num_columns = min(5, max(1, (num_items + 2) // 3))
@@ -64,27 +64,9 @@ def create_movie_layout(items, canvas_size=(1920, 1080), margin=10, font_path='.
 
 if __name__ == "__main__":
     # Example usage
-    items = [
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        ("Movie 1", "./cache/video_frames/akeytNVcIy4/frame_781.jpg"),
-        
-    ]
+    repeat_times = 12
+    test_sentence = "test " * 40
+    items = [(test_sentence, "./cache/video_frames/example.jpg")] * repeat_times
 
-    output_image = create_movie_layout(items)
+    output_image = create_layout(items)
     output_image.save('movie_layout.png')

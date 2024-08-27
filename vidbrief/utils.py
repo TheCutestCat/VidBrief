@@ -57,14 +57,11 @@ def chunk_text(text, chunk_size=600, overlap=100):
     return chunks
 
 
-def download_video_with_subtitles(video_url, output_path="./videos/%(id)s.%(ext)s"):
-    # 解析视频URL以获取视频ID
-    with yt_dlp.YoutubeDL() as ydl:
-        info_dict = ydl.extract_info(video_url, download=False)
-        video_id = info_dict.get("id", "default_id")
+def download_video_with_subtitles(youtube_id, output_path="./videos/%(id)s.%(ext)s"):
     
+    video_url = f"https://www.youtube.com/watch?v={youtube_id}"
     # 生成文件名和路径
-    output_path = output_path.replace("%(id)s", video_id)
+    output_path = output_path.replace("%(id)s", f"{youtube_id}")
     output_path = output_path.replace("%(ext)s", "mp4")
     
     # 检查文件是否已存在
@@ -140,33 +137,44 @@ def extract_segments_from_vtt(file_path):
     return segments
 
 
-def extract_frames(video_path, frame_folder):
+def extract_frames(video_path, frame_folder, target_list):
     # Ensure the frame folder exists
     if not os.path.exists(frame_folder):
         os.makedirs(frame_folder)
 
-    # Return the list of all files in the frame folder
-    if os.listdir(frame_folder):
-        return os.listdir(frame_folder)
+    # Create a set from the target list for faster lookup
+    target_set = set(target_list)
     
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS)
     
     saved_image_files = []
     
-    success, image = cap.read()
+    # Pre-calculate frame numbers for each target second to avoid processing every frame
+    target_frames = {int(time * fps) for time in target_set}
+
     frame_count = 0
 
-    while success:
-        frame_time = int(cap.get(cv2.CAP_PROP_POS_MSEC) / 1000)
-        
-        # Capture the frame every second
-        if frame_count % int(fps) == 0:
+    while True:
+        # Directly set the capture to the next target frame to skip unnecessary frames
+        if frame_count in target_frames:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_count)
+            success, image = cap.read()
+            
+            if not success:
+                break
+            
+            frame_time = int(cap.get(cv2.CAP_PROP_POS_MSEC) / 1000)
             image_file = f"{frame_folder}/frame_{frame_time}.jpg"
             cv2.imwrite(image_file, image)  # Save frame as JPEG file
             saved_image_files.append(image_file)
 
-        success, image = cap.read()
+            # Remove the processed second from the set to avoid duplicate processing
+            target_frames.remove(frame_count)
+            
+        if not target_frames:
+            break
+
         frame_count += 1
 
     cap.release()
