@@ -1,2 +1,9 @@
 yt_dlp
 opencv-python
+scikit-learn
+numpy
+python-dotenv
+openai
+pydantic
+pillow
+matplotlib
