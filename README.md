@@ -1,7 +1,7 @@
 - VidBrief generates a visual summary from a YouTube video link.
 
 - To create a photo summary, run the following command:
-```
+```shell
 python vidbrief/main.py --url https://www.youtube.com/watch?v=DQacCB9tDaw
 
 ```
